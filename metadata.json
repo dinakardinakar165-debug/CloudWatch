@@ -1,0 +1,6 @@
+{
+  "name": "CloudWatch Sentinel",
+  "description": "Unified AWS Cloud Monitoring, Cost Intelligence & CI/CD Pipeline Observability Platform: EC2 & CloudWatch metrics, Cost Explorer analytics, CodePipeline & CodeBuild tracking, statistical anomaly detection, and real-time alerts.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

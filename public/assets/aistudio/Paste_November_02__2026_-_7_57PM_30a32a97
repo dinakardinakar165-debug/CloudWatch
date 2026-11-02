@@ -1,0 +1,1115 @@
+# MASTER BUILD PROMPT — CLOUDWATCH SENTINEL
+## Enterprise AWS Cloud Observability, Cost Intelligence & CI/CD Pipeline Monitoring Platform
+
+Act as a principal software architect, senior AWS cloud engineer, full-stack developer, DevOps engineer, cybersecurity engineer, database architect, data engineer, and professional SaaS UI/UX designer.
+
+Build a complete, production-oriented, full-stack cloud monitoring platform from scratch named:
+
+# CLOUDWATCH SENTINEL
+### Unified AWS Cloud Monitoring, Cost Intelligence & Pipeline Observability Platform
+
+This must be a real functional software application, not a static dashboard, frontend prototype, or collection of fake charts.
+
+I want to build a platform that connects to an actual AWS account, monitors its infrastructure, tracks cloud spending, monitors AWS deployment pipelines, identifies failures, detects unusual activity, and provides real-time monitoring information.
+
+Build the complete application with a professional interface, secure backend, persistent database, AWS integrations, background monitoring workers, analytics, alerts, and deployment configuration.
+
+Do not stop after creating the homepage. Implement all major pages, backend services, database operations, integrations, and functional workflows.
+
+If account credentials or external permissions are unavailable, implement the integration code, configuration screens, tests, and setup instructions. Never pretend a connection or live integration works until it has been verified.
+
+---
+
+# 1. PRODUCT OBJECTIVE
+
+CloudWatch Sentinel is a unified cloud observability platform for monitoring AWS infrastructure, cloud spending, and CI/CD pipelines.
+
+The platform must answer these questions:
+
+**Infrastructure**
+- Which AWS resources are running?
+- What is the current CPU utilisation of supported resources?
+- What is their network activity?
+- Which resources have health or monitoring problems?
+- Which metrics are changing unexpectedly?
+
+**Cost**
+- How much is the AWS account spending?
+- Which services contribute most to spending?
+- How has expenditure changed?
+- Are there unusual cost increases?
+- Are budgets approaching their configured limits?
+
+**Pipeline**
+- Which AWS CI/CD pipelines are running?
+- Which pipeline executions succeeded?
+- Which executions failed?
+- Which stage is currently executing?
+- Which builds failed?
+- Which deployments succeeded or failed?
+- How long are pipeline executions taking?
+- Are there repeated failures?
+
+**Operations**
+- Which alerts need attention?
+- What caused an alert to be generated?
+- What is the current system health?
+- What happened during the last deployment?
+- Which services are unavailable?
+- What needs investigation?
+
+Create one unified platform that brings all these monitoring capabilities together.
+
+---
+
+# 2. TECHNOLOGY STACK
+
+Use a modern, maintainable architecture.
+
+## Frontend
+- React
+- TypeScript
+- Vite
+- Tailwind CSS
+- Recharts
+- Lucide React icons
+- React Router
+- A suitable data-fetching and caching library
+
+## Backend
+- Python
+- FastAPI
+- Uvicorn
+- Pydantic
+- SQLAlchemy
+- AWS SDK for Python (Boto3)
+
+## Database and real-time
+- Supabase PostgreSQL
+- Supabase Realtime
+- Supabase authentication or the selected secure application authentication architecture
+
+## Cloud integration
+- AWS CloudWatch
+- AWS Cost Explorer
+- AWS EC2
+- AWS CodePipeline
+- AWS CodeBuild
+- AWS CodeDeploy
+- AWS CloudTrail where authorised and useful
+- Amazon EventBridge where appropriate
+- Amazon SNS or another notification service if configured
+
+Only integrate services that are actually implemented and available in the AWS account.
+
+## Hosting
+- Render Static Site
+- Render Web Service
+- Separate background worker if required
+
+Keep the architecture modular. Do not place all application logic inside one React component or one FastAPI route.
+
+---
+
+# 3. SYSTEM ARCHITECTURE
+
+Implement the following architecture.
+
+AWS ACCOUNT
+│
+├── CloudWatch
+│   ├── EC2 Metrics
+│   ├── Network Metrics
+│   ├── Service Metrics
+│   └── CloudWatch Alarms
+│
+├── Cost Explorer
+│   ├── Service Costs
+│   ├── Daily Costs
+│   ├── Monthly Costs
+│   └── Budget Information
+│
+├── Resource APIs
+│   ├── EC2 Inventory
+│   └── Supported Resource Metadata
+│
+└── CI/CD SERVICES
+    ├── CodePipeline
+    ├── CodeBuild
+    ├── CodeDeploy
+    └── CloudTrail / EventBridge Events
+                 │
+                 ▼
+         FASTAPI BACKEND
+                 │
+       ┌─────────┼──────────┐
+       ▼         ▼          ▼
+  Monitoring  Analytics   Pipeline
+  Collector   Engine      Processor
+       │         │          │
+       └─────────┼──────────┘
+                 ▼
+         SUPABASE POSTGRESQL
+                 │
+          SUPABASE REALTIME
+                 │
+                 ▼
+         REACT FRONTEND
+                 │
+                 ▼
+         CLOUDWATCH SENTINEL
+
+Render hosts the frontend, API backend, and background collection worker.
+
+Create a clean architecture diagram in the application and project documentation.
+
+---
+
+# 4. AWS ACCOUNT INTEGRATION
+
+Build a dedicated AWS Account Connection module.
+
+The user must be able to configure and validate an AWS account securely.
+
+Include:
+- AWS account connection status
+- Account identifier
+- Configured AWS region
+- Connection verification
+- Permission verification
+- Last successful connection
+- Available AWS services
+- Integration errors
+- Reconnection instructions
+
+Support a secure authentication method.
+
+Prefer IAM roles and temporary credentials where the hosting environment supports them. For Render, do not assume that an AWS instance role is automatically available. Design a secure supported credential or role-assumption flow.
+
+If credentials are required:
+- Keep them exclusively on the backend.
+- Never expose secret keys to the browser.
+- Never hardcode secrets.
+- Never commit credentials.
+- Never print secret values in logs.
+- Apply least-privilege IAM policies.
+- Provide a secure credential rotation process.
+
+Create a clear connection test.
+
+Only display CONNECTED when an authenticated AWS request has actually succeeded.
+
+If credentials are unavailable, show NOT CONFIGURED.
+
+Never generate fake account identifiers or pretend that AWS is connected.
+
+---
+
+# 5. MODULE ONE — AWS INFRASTRUCTURE MONITORING
+
+Build a complete infrastructure monitoring system.
+
+## 5.1 Resource discovery
+
+Use supported AWS APIs to discover actual resources.
+
+Start with EC2 and extend to additional services where appropriate.
+
+Show:
+- Resource ID
+- Resource name where available
+- Resource type
+- AWS region
+- Resource state
+- Instance type where applicable
+- Launch time where available
+- Latest metric collection
+- Monitoring status
+
+Do not invent resources or metadata.
+
+## 5.2 EC2 monitoring
+
+Integrate CloudWatch metric retrieval.
+
+Support available metrics such as:
+- CPUUtilization
+- NetworkIn
+- NetworkOut
+- StatusCheckFailed
+- StatusCheckFailed_Instance
+- StatusCheckFailed_System
+
+Add memory and disk metrics only when the required CloudWatch Agent or equivalent telemetry source is configured.
+
+For every metric display:
+- Metric name
+- Value
+- Unit
+- Resource identifier
+- Observation timestamp
+- AWS region
+- Collection status
+
+Create:
+- CPU utilisation line chart
+- Network input/output chart
+- Resource comparison chart
+- Historical metric view
+- Metric threshold indicators
+
+Support selectable time periods and refresh intervals.
+
+Do not represent a missing metric as zero.
+
+## 5.3 Infrastructure health
+
+Show:
+- Healthy resources
+- Resources with warnings
+- Resources with critical issues
+- Resources with unavailable telemetry
+- Last successful collection
+- Collection failures
+
+Clearly explain the criteria used to classify health.
+
+Do not infer that an EC2 instance is healthy just because its CPU metric is available.
+
+---
+
+# 6. MODULE TWO — AWS COST INTELLIGENCE
+
+Implement actual AWS cost retrieval.
+
+Use AWS Cost Explorer APIs, particularly GetCostAndUsage, where available and authorised.
+
+Display:
+- Actual AWS expenditure
+- Month-to-date cost
+- Previous-period cost
+- Daily spending
+- Monthly spending
+- Cost by service
+- Cost by region where supported
+- Cost by account where supported
+- Cost by usage type where supported
+- Top spending categories
+- Largest cost increases
+- Cost trends
+
+Include:
+- Date selection
+- Daily, monthly, and supported aggregation
+- Service filters
+- Cost comparison
+- Currency information
+- Retrieval timestamp
+- Billing data freshness
+
+Implement budgets using actual configured budget information or clearly labelled application-level budget settings.
+
+Display budget utilisation and threshold alerts.
+
+Important:
+AWS billing information can be delayed. Do not describe Cost Explorer as second-by-second monitoring.
+
+Never show simulated values as actual AWS billing information.
+
+Provide a separate demonstration mode for synthetic data.
+
+---
+
+# 7. MODULE THREE — AWS CI/CD PIPELINE MONITORING
+
+THIS IS A MAJOR FEATURE OF THE APPLICATION.
+
+Build a dedicated AWS Pipeline Observability Center.
+
+The objective is to monitor AWS deployment pipelines and detect failures throughout the CI/CD lifecycle.
+
+Integrate the following services where permissions and account configuration allow.
+
+## 7.1 AWS CodePipeline
+
+Use AWS CodePipeline APIs to retrieve:
+- Pipeline list
+- Pipeline configuration metadata
+- Latest execution
+- Execution ID
+- Execution status
+- Start time
+- Last update time
+- Current stage
+- Stage execution status
+- Failed stages
+- Pipeline duration where measurable
+
+Support execution states such as:
+- InProgress
+- Succeeded
+- Failed
+- Stopped
+- Superseded
+- Other returned states
+
+Do not assume every pipeline uses the same stage structure.
+
+## 7.2 Pipeline execution details
+
+Create a detailed pipeline inspection page.
+
+When a user selects a pipeline, show its stages in order.
+
+Example:
+
+Source → Build → Test → Deploy
+
+This is only an illustrative workflow. Use the actual stages returned by AWS.
+
+For each stage show:
+- Stage name
+- Status
+- Start time
+- End time
+- Duration
+- Failed action
+- Execution details
+- Available error message
+- Last successful execution
+
+Create a clear visual execution timeline.
+
+Highlight the stage that failed.
+
+Provide a link to the relevant AWS Console page when a valid console URL can be constructed from verified account and region information.
+
+## 7.3 AWS CodeBuild monitoring
+
+Integrate CodeBuild APIs.
+
+Show:
+- Project name
+- Build ID
+- Build status
+- Start time
+- End time
+- Duration
+- Build environment information where available
+- Build failure reason
+- Phase details
+- Build logs link when authorised
+
+Monitor:
+- Successful builds
+- Failed builds
+- In-progress builds
+- Build duration trends
+- Repeated failures
+
+Never retrieve or display sensitive build secrets.
+
+## 7.4 AWS CodeDeploy monitoring
+
+Where configured, retrieve:
+- Application name
+- Deployment group
+- Deployment ID
+- Deployment status
+- Start time
+- Completion time
+- Deployment duration
+- Failure information
+- Deployment lifecycle events
+
+Show deployment success and failure trends.
+
+If CodeDeploy is not configured in the AWS account, show an appropriate not-configured state.
+
+## 7.5 Pipeline failure analysis
+
+Create a dedicated failure investigation interface.
+
+Detect:
+- Failed pipeline executions
+- Failed source stages
+- Failed build stages
+- Failed test stages where represented in pipeline execution data
+- Failed deployment stages
+- Repeated failure patterns
+- Long-running executions
+- Stopped or superseded executions
+
+For each failure show:
+- Pipeline name
+- Execution ID
+- Failed stage
+- Failed action
+- Error message where available
+- Failure timestamp
+- Duration
+- Suggested troubleshooting steps
+
+Suggested actions must be guidance, not claims that the platform knows the root cause.
+
+## 7.6 Pipeline analytics
+
+Provide:
+- Total pipelines
+- Successful executions
+- Failed executions
+- In-progress executions
+- Pipeline success percentage
+- Average execution duration
+- Failure count by pipeline
+- Stage failure distribution
+- Build duration trend
+- Deployment success trend
+
+Calculate percentages from actual execution records and use a clearly defined time range.
+
+If there are no executions, display an empty state rather than inventing statistics.
+
+## 7.7 Pipeline real-time events
+
+Implement a genuine event-driven update architecture.
+
+Prefer:
+AWS EventBridge
+→ EventBridge Rule
+→ Secure Event Target / API
+→ FastAPI Event Processor
+→ Supabase PostgreSQL
+→ Supabase Realtime
+→ React Pipeline Dashboard
+
+Where applicable, use AWS service event notifications for:
+- Pipeline execution state changes
+- Stage execution changes
+- Action execution changes
+- Build state changes
+- Deployment state changes
+
+Verify which events are actually available from the selected event sources.
+
+Provide polling as a fallback where event delivery is unavailable.
+
+Implement:
+- Event validation
+- Idempotency
+- Duplicate-event handling
+- Event timestamps
+- Event processing status
+- Retry handling
+- Error logging
+- Event history
+
+Do not claim that pipeline updates are event-driven until the EventBridge configuration and event delivery have been tested.
+
+---
+
+# 8. MODULE FOUR — UNIFIED ALERT AND INCIDENT CENTER
+
+Create a single alert center for infrastructure, cost, and pipeline monitoring.
+
+Alert categories:
+- Infrastructure
+- Cost
+- Pipeline
+- Build
+- Deployment
+- Security or audit events where supported
+
+Severity:
+- Critical
+- High
+- Medium
+- Low
+- Informational
+
+Every alert must contain:
+- Alert ID
+- Category
+- Severity
+- Source
+- Resource or pipeline identifier
+- Description
+- Detection timestamp
+- Supporting evidence
+- Current status
+- Suggested next action
+
+Support:
+- Open
+- Acknowledged
+- Resolved
+- Search
+- Severity filters
+- Category filters
+- Time filters
+- Alert detail view
+- Alert history
+- Persistent status updates
+
+Create a unified incident timeline.
+
+For example:
+- EC2 CPU threshold exceeded
+- Pipeline execution failed
+- Cost increase detected
+- Deployment failed
+
+These should be actual stored events, not static cards.
+
+Add optional email or external notifications only when a provider has been configured and tested.
+
+---
+
+# 9. MODULE FIVE — ANOMALY DETECTION ENGINE
+
+Create an anomaly detection engine that evaluates both infrastructure metrics and cost records.
+
+Use a combination of:
+- Configurable threshold rules
+- Z-score statistical detection
+- Historical baseline comparison
+- Repeated failure detection
+- Pipeline duration deviations
+- Cost spike detection
+
+Formula:
+
+Z = (x - μ) / σ
+
+Explain the observed value, historical mean, and standard deviation.
+
+Implement:
+- Minimum historical data requirements
+- Zero-variance handling
+- Missing data handling
+- Duplicate alert suppression
+- Cooldown periods
+- Configurable thresholds
+- Severity calculation
+- Evidence preservation
+
+Do not describe simple threshold rules as machine learning.
+
+Do not claim that an anomaly identifies its root cause.
+
+---
+
+# 10. MODULE SIX — SUPABASE DATABASE AND REALTIME
+
+Use Supabase PostgreSQL as the persistent data store.
+
+Suggested entities:
+- cloud_accounts
+- cloud_resources
+- metric_samples
+- cost_records
+- cost_summaries
+- pipelines
+- pipeline_executions
+- pipeline_stages
+- build_executions
+- deployment_executions
+- anomalies
+- alerts
+- monitoring_rules
+- collection_runs
+- event_history
+- user_profiles
+- audit_events
+
+Adapt the schema to the actual application.
+
+Requirements:
+- Primary keys
+- Foreign keys
+- Indexes
+- Timezone-aware timestamps
+- Numeric types for cost and metric values
+- Data validation
+- Database migrations
+- Connection pooling
+- Transaction handling
+- Row Level Security where appropriate
+
+Use Supabase Realtime to update:
+- Infrastructure metrics
+- Pipeline executions
+- Pipeline stages
+- Cost records
+- Anomalies
+- Alerts
+
+Do not expose the Supabase service-role key in the browser.
+
+All sensitive AWS interactions must occur on the backend.
+
+If a Supabase project does not exist, guide me through creating one. Do not pretend you have created it or know its credentials.
+
+---
+
+# 11. MODULE SEVEN — BACKGROUND MONITORING ENGINE
+
+Create a dedicated background collection service.
+
+It must manage:
+- Infrastructure metric collection
+- Cost retrieval
+- Resource discovery
+- Pipeline execution monitoring
+- Build status collection
+- Deployment status collection
+- Event processing
+- Anomaly detection
+- Alert generation
+
+Use appropriate intervals based on AWS API capabilities, costs, and quotas.
+
+Implement:
+- Scheduled jobs
+- Configurable intervals
+- Job locking
+- Retry with exponential backoff
+- Timeouts
+- Rate-limit handling
+- Collection history
+- Success and failure statistics
+- Last successful collection
+- Manual collection trigger
+- Worker health checks
+
+Do not run duplicate background workers unintentionally.
+
+Do not create excessive API requests.
+
+Where possible, prefer event-driven pipeline updates and use polling only for services or data that require it.
+
+---
+
+# 12. MODULE EIGHT — PROFESSIONAL REPORTING
+
+Create a reporting center.
+
+Reports:
+- AWS Infrastructure Health Report
+- AWS Cost Analysis Report
+- CI/CD Pipeline Performance Report
+- Pipeline Failure Report
+- Deployment History Report
+- Anomaly Report
+- Unified Monitoring Report
+
+Include:
+- Reporting period
+- Account and region
+- Data source
+- Generated timestamp
+- Metrics
+- Charts
+- Tables
+- Failure summaries
+- Alert summaries
+- Data freshness
+- Limitations
+
+Support CSV export and printable reports.
+
+Only use actual collected records in reports.
+
+Clearly label demo data and missing information.
+
+---
+
+# 13. APPLICATION PAGES AND NAVIGATION
+
+Build the following professional navigation.
+
+1. Overview
+2. Infrastructure Monitoring
+3. Resource Explorer
+4. CloudWatch Metrics
+5. Cost Intelligence
+6. Cost Explorer
+7. CI/CD Pipeline Monitoring
+8. Pipeline Details
+9. Build Monitoring
+10. Deployment Monitoring
+11. Pipeline Analytics
+12. Anomaly Investigation
+13. Alerts & Incidents
+14. Optimization Insights
+15. Reports & Exports
+16. AWS Account Connections
+17. System Health
+18. Settings
+19. Team Profile
+
+Every page must have a specific purpose and functional content.
+
+Do not create empty placeholder pages or buttons that do nothing.
+
+Use appropriate loading, error, empty, disconnected, and not-configured states.
+
+---
+
+# 14. OVERVIEW DASHBOARD
+
+Create a unified operational overview.
+
+Include:
+- AWS connection status
+- Monitored resource count
+- Healthy resources
+- Infrastructure warnings
+- Current-period AWS cost
+- Cost anomalies
+- Active pipeline count
+- Failed pipeline executions
+- Successful pipeline executions
+- Pipeline success rate
+- Active alerts
+- Latest monitoring update
+
+Below the KPIs include:
+- Infrastructure trend chart
+- Cost trend chart
+- Pipeline execution activity
+- Recent failed builds
+- Recent deployments
+- Recent anomalies
+- Recent alerts
+- Monitoring collection health
+
+All values must come from actual data and a clearly selected time range.
+
+If a service is not configured, show a clear setup status instead of zero or a fabricated healthy status.
+
+---
+
+# 15. PROFESSIONAL UI AND DESIGN SYSTEM
+
+Create a high-quality enterprise SaaS design.
+
+Visual inspiration:
+Professional cloud operations and observability platforms such as AWS Management Console, Datadog, Grafana, and modern enterprise monitoring tools.
+
+Do not copy their branding or exact layouts.
+
+### Colour palette
+
+- Navy: #14243A
+- Blue: #3157C8
+- Background: #F4F6F9
+- White: #FFFFFF
+- Text: #263445
+- Secondary text: #667085
+- Teal: #168C83
+- Warning: #D99A28
+- Critical: #C43232
+- Border: #E0E5EC
+
+### Layout
+
+- Professional dark sidebar
+- Clean light workspace
+- Responsive top navigation
+- Breadcrumbs
+- Account and region selectors
+- Global time-range selector
+- Real-time connection indicator
+- Consistent tables and chart styling
+- Resource and pipeline detail panels
+- Clear status badges
+- Well-designed forms and dialogs
+
+Avoid:
+- Generic AI dashboard templates
+- Excessive rounded cards
+- Neon gradients
+- Glassmorphism
+- Decorative floating elements
+- Random illustrations
+- Repeated identical layouts
+- Fake data
+
+Use readable typography, restrained colours, clear alignment, and purposeful whitespace.
+
+---
+
+# 16. AUTHENTICATION AND MULTI-USER ACCESS
+
+Implement:
+- User registration
+- Login
+- Logout
+- Protected routes
+- User profiles
+- Secure session management
+- Role-based access where appropriate
+- Account-level data isolation
+
+Potential roles:
+- Administrator
+- Cloud Engineer
+- DevOps Engineer
+- Viewer
+
+Enforce permissions in the backend, not only in the frontend.
+
+Protect AWS connection settings and sensitive account information.
+
+Never expose secrets to unauthorised users.
+
+---
+
+# 17. SECURITY AND IAM
+
+Generate a least-privilege IAM policy for the actual APIs used.
+
+Separate read-only monitoring permissions from optional event configuration permissions.
+
+Do not automatically grant broad administrator permissions.
+
+Document permissions for:
+- CloudWatch metric reads
+- EC2 resource discovery
+- Cost Explorer reads
+- CodePipeline reads
+- CodeBuild reads
+- CodeDeploy reads where applicable
+- EventBridge configuration or event delivery where applicable
+
+Use only the permissions required by implemented features.
+
+Do not create, stop, terminate, deploy, or modify AWS production resources from the monitoring platform unless an explicit, separately authorised action is designed and confirmed.
+
+The default platform must be read-only.
+
+---
+
+# 18. TESTING AND VERIFICATION
+
+Create comprehensive tests.
+
+Backend:
+- AWS credential validation
+- CloudWatch API client
+- Cost Explorer API client
+- EC2 resource discovery
+- CodePipeline retrieval
+- CodeBuild retrieval
+- CodeDeploy retrieval
+- Event processing
+- Duplicate event prevention
+- Database operations
+- Alert persistence
+- Anomaly detection
+- Authentication
+- Access control
+
+Frontend:
+- Navigation
+- Account connection form
+- Dashboard data
+- Pipeline filters
+- Pipeline detail view
+- Metric charts
+- Cost analytics
+- Alerts
+- Realtime updates
+- Loading and failure states
+
+Integration:
+- Authenticate to a configured AWS account.
+- Retrieve at least one supported real metric.
+- Retrieve cost data if Cost Explorer access is enabled.
+- Retrieve at least one pipeline if configured.
+- Retrieve a build execution where configured.
+- Store data in Supabase.
+- Verify that the frontend receives the update.
+- Verify that an alert can be persisted and acknowledged.
+
+If no AWS account is connected, use mocked responses for automated development tests and clearly label them as mocked tests.
+
+Do not claim live AWS testing has passed when only mocks were used.
+
+---
+
+# 19. GOOGLE AI STUDIO BUILD REQUIREMENTS
+
+Build the complete application in the Google AI Studio environment.
+
+Before implementing, inspect which frontend and server-side execution capabilities are available.
+
+If the environment supports a full-stack React application, use it.
+
+If persistent backend services cannot run inside the AI Studio preview environment, separate the frontend from the production backend and prepare the FastAPI backend for external deployment on Render.
+
+Do not put AWS secrets in frontend code.
+
+Create a clean project structure.
+
+Create:
+- Frontend application
+- Backend API
+- Database schema
+- Database migrations
+- AWS service integrations
+- Background worker
+- Realtime subscriptions
+- Environment example files
+- README
+- Setup documentation
+- IAM policy documentation
+- Deployment configuration
+
+Make sure the frontend preview works even before AWS credentials are configured.
+
+Create a polished onboarding state for users who have not connected AWS.
+
+The application must be ready for actual AWS and Supabase configuration, not limited to a visual demonstration.
+
+---
+
+# 20. DEPLOYMENT
+
+Prepare the application for deployment.
+
+Frontend:
+Render Static Site.
+
+Backend:
+Render Web Service.
+
+Background worker:
+Separate Render Background Worker or an appropriate scheduled collection architecture.
+
+Database:
+Supabase PostgreSQL.
+
+Realtime:
+Supabase Realtime.
+
+Create:
+- Environment variable documentation
+- Production build configuration
+- API URL configuration
+- CORS configuration
+- Health endpoint
+- Database connection check
+- Worker health status
+- Deployment guide
+
+Never put credentials in the Git repository.
+
+Do not claim deployment success until the deployed services have been tested.
+
+---
+
+# 21. IMPLEMENTATION ORDER
+
+Complete the work in stages:
+
+Stage 1: Project foundation and design system.
+
+Stage 2: Backend API and database schema.
+
+Stage 3: Supabase integration.
+
+Stage 4: AWS account authentication and connection validation.
+
+Stage 5: Infrastructure monitoring.
+
+Stage 6: AWS cost monitoring.
+
+Stage 7: CodePipeline, CodeBuild, and CodeDeploy monitoring.
+
+Stage 8: Background collection and event processing.
+
+Stage 9: Real-time updates.
+
+Stage 10: Anomaly detection and unified alerts.
+
+Stage 11: Analytics, reporting, and optimisation.
+
+Stage 12: Security and role-based access.
+
+Stage 13: Testing and deployment.
+
+Do not create all pages as static placeholders and claim the project is complete.
+
+Implement actual backend functionality for each major module.
+
+---
+
+# 22. FINAL ACCEPTANCE CRITERIA
+
+The application must demonstrate the following real workflows:
+
+WORKFLOW A — INFRASTRUCTURE
+
+Connect AWS → Discover supported resources → Retrieve CloudWatch metrics → Store observations → Display historical charts → Generate an alert when a configured condition is met.
+
+WORKFLOW B — COST
+
+Connect Cost Explorer → Retrieve actual billing data → Store cost records → Calculate summaries → Detect unusual changes → Display cost analytics.
+
+WORKFLOW C — CI/CD PIPELINE
+
+Connect CodePipeline → Retrieve pipeline executions → Identify stage states → Retrieve CodeBuild information → Track deployment status → Identify failures → Display pipeline analytics.
+
+WORKFLOW D — REAL-TIME ALERTS
+
+New monitoring event → Backend processing → Database persistence → Alert generation → Supabase Realtime → Frontend update.
+
+WORKFLOW E — REPORTING
+
+Select time range → Retrieve stored records → Generate report → Export CSV or printable summary.
+
+Every workflow must use real data when integrations are configured and must have a clearly labelled demonstration mode otherwise.
+
+---
+
+# 23. FINAL PROJECT IDENTITY
+
+Project Name: CloudWatch Sentinel
+
+Full Title: Unified AWS Cloud Monitoring, Cost Intelligence & CI/CD Pipeline Observability Platform.
+
+Institution: Kumaraguru College of Technology.
+
+Subject: Cloud Application and Development.
+
+Team:
+
+1. Dinakar S — 24BCS405
+2. Kabileshwara Y — 24BCS411
+3. Pranesh Sachin M — 24BCS415
+4. Santhosh TMA — 24BCS247
+5. Nikhil R — 24BCS190
+
+---
+
+# FINAL INSTRUCTION
+
+Start by designing the application architecture and project structure.
+
+Then implement the actual application.
+
+Do not stop at the first dashboard screen.
+
+Do not use fake AWS data as real data.
+
+Do not claim AWS connectivity without a successful authenticated request.
+
+Do not claim pipeline monitoring without retrieving actual pipeline executions.
+
+Do not claim real-time updates without verifying the event flow.
+
+Create a complete, professional, functional AWS cloud observability platform that can be demonstrated to college faculty and extended into a real cloud engineering product.
+
+Prioritise correctness, security, genuine integrations, real-time functionality, professional UI, and maintainable code.
